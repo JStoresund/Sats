@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta src="./response.json">
+    <title>Import JSON Example</title>
+</head>
+<body>
+    <h1>JSON Data</h1>
+    <br />
+    <div id="jsonData"></div>
+
+    <script>
+        fetch('response.json')
+            .then(response => response.json())
+            .then(data => {
+                data.results.forEach(elem => {
+                    console.log(elem)
+                    const {
+                        id, 
+                        durationInMinutes, 
+                        instructor,
+                        clubName,
+                        name,
+                        bookingInfo,
+                        followingBookingCount,
+                        followingBookings,
+                        participationProbability, //potentially undefined
+                        zonedStartTime
+                    } = elem
+                })
+
+                console.log("Successfully fetched data")
+            })
+            .catch((error) => {
+                console.error('Error loading the JSON file:', error)
+                const errorItem = document.createElement("div")
+                errorItem.innerText = "Failed to fetch JSON content"
+                document.getElementById("jsonData").appendChild(errorItem)
+            })
+    </script>
+</body>
+</html>
