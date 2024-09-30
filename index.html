@@ -3,41 +3,46 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta src="./response.json">
-    <title>Import JSON Example</title>
+    <title>Sats</title>
 </head>
 <body>
-    <h1>JSON Data</h1>
-    <br />
-    <div id="jsonData"></div>
+    <h1>Sats treningstimer</h1>
+    <div id="jsonData" style="padding-left: 3px;"></div>
 
     <script>
         fetch('response.json')
             .then(response => response.json())
             .then(data => {
+                let trainingContent = ""
                 data.results.forEach(elem => {
-                    console.log(elem)
                     const {
-                        id, 
-                        durationInMinutes, 
-                        instructor,
-                        clubName,
-                        name,
-                        bookingInfo,
-                        followingBookingCount,
-                        followingBookings,
+                        id, durationInMinutes, instructor, clubName, name,
+                        bookingInfo, followingBookingCount, followingBookings,
                         participationProbability, //potentially undefined
                         zonedStartTime
                     } = elem
-                })
 
+                    trainingContent += `
+                        <section id="${id}" style="padding-bottom: 40px">
+                            <strong>${name} - ${instructor}</strong>
+                            <div><strong>Hvor:</strong> ${clubName}</div>
+                            <div><strong>Når:</strong> ${new Date(zonedStartTime.dateTime).toLocaleString("nb-NO")}</div>
+                            <div><strong>Treningstid: </strong>${durationInMinutes} minutter</div>
+                            <div><strong>Antall plasser:</strong> ${bookingInfo.capacity}</div>
+                            <div><strong>Antall påmeldte:</strong> ${bookingInfo.bookedCount}</div>
+                            <div><strong>Antall venteliste:</strong> ${bookingInfo.waitingListCount}</div>
+                            <div><strong>FollowingBookingCount:</strong> ${followingBookingCount}</div>
+                            <div>Sannsynlighet for at alle møter opp: ${participationProbability || "Normal"}</div>
+                        </section>
+                    `
+                })
+                document.getElementById("jsonData").innerHTML = trainingContent
+                // Ikke gjør dette i praksis, barn. Mulig sårbarhet for XSS fra JSON-filen
                 console.log("Successfully fetched data")
             })
             .catch((error) => {
                 console.error('Error loading the JSON file:', error)
-                const errorItem = document.createElement("div")
-                errorItem.innerText = "Failed to fetch JSON content"
-                document.getElementById("jsonData").appendChild(errorItem)
+                document.getElementById("jsonData").innerHTML = "<div>Failed to load training data</div>"
             })
     </script>
 </body>
